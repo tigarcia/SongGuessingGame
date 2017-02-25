@@ -8,7 +8,9 @@ import {
 export default class CustomButton extends Component {
   render() {
     return (
-      <TouchableOpacity style={styles.buttonContainer}>
+      <TouchableOpacity
+        style={styles.buttonContainer}
+        onPress={this.props.onPress}>
         <Text style={styles.buttonText}>
           {this.props.title}
         </Text>
@@ -19,7 +21,12 @@ export default class CustomButton extends Component {
 
 const styles = StyleSheet.create({
   buttonContainer: {
+    borderRadius: 4,
+    backgroundColor: "blue",
+    padding:10 
   },
   buttonText: {
+    color: 'white',
+    fontSize: 25
   } 
 });
