@@ -23,7 +23,11 @@ export default class Welcome extends Component {
           <TouchableOpacity
               style={styles.customButton}
               color="blue">
-            <Text style={styles.buttonText}>NO! PRESS ME</Text>
+            <Text 
+              style={[
+                styles.buttonText,
+                {fontSize: 25}
+              ]}>NO! PRESS ME</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -34,10 +38,15 @@ export default class Welcome extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
   inputContainer: {
     width: 350,
     height: 100,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center'
   },
   welcomeText: {
     fontSize: 30
@@ -45,7 +54,11 @@ const styles = StyleSheet.create({
 
   customButton: {
     borderRadius: 4,
+    backgroundColor: "blue",
+    padding:10 
   },
   buttonText: {
+    color: 'white',
+    fontSize: 20
   } 
 });
