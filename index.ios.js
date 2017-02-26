@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { AppRegistry } from 'react-native';
-import Welcome from './src/Welcome'
+import GameContainer from './src/GameContainer'
 
 export default class SongGuessingGame extends Component {
   render() {
     return (
-      <Welcome />
+      <GameContainer />
     );
   }
 }
