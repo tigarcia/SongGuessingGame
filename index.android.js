@@ -10,4 +10,4 @@ export default class SongGuessingGame extends Component {
   }
 }
 
-AppRegistry.registerComponent('SongGuessingGame', () => SongGuessingGame);
+AppRegistry.registerComponent('SongGuessingGame', () => GameContainer);
