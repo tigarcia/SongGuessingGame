@@ -9,7 +9,7 @@ import SongData from './SongData';
 
 const audioFile = 'audio.m4a';
 const audioPath = RNFS.DocumentDirectoryPath;
-export default class SongGame extends Component {
+export default class Guess extends Component {
   constructor(props) {
     super(props);
     this.state = {

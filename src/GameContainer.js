@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Welcome from './Welcome';
-import SongGame from './SongGame';
+import Guess from './Guess';
 
 
 export default class GameContainer extends Component {
@@ -19,7 +19,7 @@ export default class GameContainer extends Component {
 
   render() {
    return this.state.startGame ?
-              <SongGame/> :
+              <Guess/> :
               <Welcome onStartPlaying={this.onStartPlaying} />;
   } 
 }
