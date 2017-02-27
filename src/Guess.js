@@ -7,6 +7,7 @@ import {
 import RNFS from 'react-native-fs';
 import SongData from './SongData';
 import GuessInput from './GuessInput';
+import PlayHint from './PlayHint';
 
 const audioFile = 'audio.m4a';
 const audioPath = RNFS.DocumentDirectoryPath;
