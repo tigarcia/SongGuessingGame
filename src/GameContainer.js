@@ -19,7 +19,7 @@ export default class GameContainer extends Component {
 
   render() {
    return this.state.startGame ?
-              <SongGame/> :
+              <Guess/> :
               <Welcome onStartPlaying={this.onStartPlaying} />;
   } 
 }
