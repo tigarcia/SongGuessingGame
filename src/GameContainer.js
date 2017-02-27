@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Welcome from './Welcome';
-import SongGame from './SongGame';
+import Guess from './Guess';
 
 
 export default class GameContainer extends Component {
