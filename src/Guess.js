@@ -15,33 +15,31 @@ export default class Guess extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      playAudio: false,
       guess: '',
-      song: {},
-      playAudio: false
+      guessIncorrect: undefined,
+      song: {}
     }
-    this.downloadSong = this.downloadSong.bind(this);
+    this.downloadAndPlaySong = this.downloadAndPlaySong.bind(this);
     this.onChangeGuess = this.onChangeGuess.bind(this);
     this.onGuess = this.onGuess.bind(this);
+    this.onSongDone = this.onSongDone.bind(this);
   }
 
-  onChangeGuess(guess) {
-    this.setState({guess});
+  resetState(cb) {
+    this.setState({
+      playAudio: false,
+      guess: '',
+      guessIncorrect: undefined,
+      song: {}
+    }, cb);
   }
 
-  onGuess() {
-    console.warn(this.state.guess);
-  }
-
-
-  componentDidMount() {
-    this.downloadSong()
-  }
-
-  downloadSong() {
+  downloadAndPlaySong() {
     const songId = SongData.randomSongId();
     fetch(`https://itunes.apple.com/us/lookup?id=${songId}`)
       .then(d => d.json())
-      .then(function(d) {
+      .then((d) => {
         let song = {};
         song.artist = d.results[0].artistName;
         song.id = d.results[0].artistId;
@@ -50,7 +48,7 @@ export default class Guess extends Component {
         song.audioUrl = d.results[0].previewUrl;
         this.setState({song});
         return song;
-      }.bind(this))
+      })
       .then((s) => {
         return RNFS.downloadFile({
           fromUrl: s.audioUrl,
@@ -60,29 +58,71 @@ export default class Guess extends Component {
       .then((d) => this.setState({playAudio: true}))
       .catch((err) => {
         console.warn("Download error: ", err);
-        this.downloadSong();
+        this.resetState(this.downloadAndPlaySong);
       })
+  }
+
+  onChangeGuess(guess) {
+    this.setState({guess});
+  }
+
+  onGuess() {
+    let result;
+    if (this.state.playAudio) {
+      if (this.verifyGuess(this.state.guess)) {
+        result = "CORRECT";
+      } else {
+        result = "INCORRECT :(";
+      }
+    }
+    console.warn(result, this.state.guess);
+  }
+
+  verifyGuess(guess) {
+
+    const guesses = guess.trim().toLowerCase().split(/\s+/);
+    const answers = `${this.state.song.artist} ${this.state.song.trackName}`
+                        .trim().toLowerCase();
+    return guesses.reduce(function(acc, g) {
+      if (answers.indexOf(g) >= 0) {
+        return true;
+      }
+      return acc;
+    }, false);
+  }
+
+  onSongDone() {
+    console.warn("Song Done");
+  }
+
+  componentDidMount() {
+    this.downloadAndPlaySong()
   }
 
   render() {
     const {artist, trackName, album, audioUrl} = this.state.song;
-    const artistInfo = this.state.playAudio ?
-                  <View>
-                    <Text>Downloaded file for:</Text>
-                    <Text>{artist}</Text>
-                    <Text>{trackName}</Text>
-                    <Text>{album}</Text>
-                    <Text>{audioUrl}</Text>
-                  </View> :
-                  <View/>;
+    const message = this.state.guessIncorrect ?
+        "Sorry, Try Again" : "";
+    const audioView = this.state.playAudio ?
+        <PlayHint
+          audioPath={audioPath}
+          audioFile={audioFile}
+          onSongDone={this.onSongDone}
+        /> :
+        <View/>;
+
     return (
       <View style={styles.container}>
+        <View style={styles.flashMessage}>
+          <Text style={styles.flashMessageText}>{message}</Text>
+        </View>
         <GuessInput
           style={styles.guessInput}
           onChangeGuess={this.onChangeGuess}
           onGuess={this.onGuess}
           guess={this.state.guess}
           />
+        {audioView}
       </View>
     );
   }
@@ -103,8 +143,8 @@ const styles = StyleSheet.create({
     fontSize: 30,
   },
   guessInput: {
-    flex: 1,
-    justifyContent: 'center',
+    flex: 0.6,
+    justifyContent: 'flex-start',
     alignItems: 'center'
   }
 });
