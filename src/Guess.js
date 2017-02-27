@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet
 } from 'react-native';
+import { NavigationActions } from 'react-navigation'
 import RNFS from 'react-native-fs';
 import SongData from './SongData';
 import GuessInput from './GuessInput';
@@ -24,6 +25,21 @@ export default class Guess extends Component {
     this.onChangeGuess = this.onChangeGuess.bind(this);
     this.onGuess = this.onGuess.bind(this);
     this.onSongDone = this.onSongDone.bind(this);
+  }
+
+  showAnswer() {
+    const { artist, trackName, album } = this.state.song;
+    const { guessIncorrect } = this.state;
+    const navigationAction = NavigationActions.navigate({
+      routeName: 'AnswerNavigator',
+      params: {},
+
+      action: NavigationActions.navigate({
+        routeName: 'Answer',
+        params: {artist, trackName, album, guessIncorrect}
+      })
+    })
+    this.props.navigation.dispatch(navigationAction)
   }
 
   resetState(cb) {
@@ -67,15 +83,16 @@ export default class Guess extends Component {
   }
 
   onGuess() {
-    let result;
     if (this.state.playAudio) {
       if (this.verifyGuess(this.state.guess)) {
-        result = "CORRECT";
+        const { navigate } = this.props.navigation;
+        this.setState({guessIncorrect: false,
+                       playAudio: false}, this.showAnswer);
       } else {
-        result = "INCORRECT :(";
+        this.setState({guessIncorrect: true});
       }
     }
-    console.warn(result, this.state.guess);
+
   }
 
   verifyGuess(guess) {
@@ -92,7 +109,7 @@ export default class Guess extends Component {
   }
 
   onSongDone() {
-    console.warn("Song Done");
+    this.setState({playAudio: false}, this.showAnswer);
   }
 
   componentDidMount() {
